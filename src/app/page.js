@@ -96,11 +96,13 @@ export default function HomePage() {
   }
 
   return (
-    <div>
+    <div className="space-y-8">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 mb-8 text-white">
-        <h1 className="text-4xl font-bold mb-2">Welcome to Shopping Hub</h1>
-        <p className="text-lg opacity-90">
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 md:p-12 text-white shadow-xl">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3">
+          Welcome to Shopping Hub
+        </h1>
+        <p className="text-base md:text-lg opacity-90 max-w-2xl">
           Discover amazing products at great prices
         </p>
       </div>

@@ -8,19 +8,25 @@ import { ShoppingCart, Menu, X, Sun, Moon } from "lucide-react";
 export default function Navbar() {
   const { totalQuantity } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDark, setIsDark] = useState(false);
-
-  // Load theme preference
-  useEffect(() => {
-    const theme = localStorage.getItem("theme");
-    const isDarkMode =
-      theme === "dark" ||
-      (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
-    setIsDark(isDarkMode);
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      const theme = localStorage.getItem("theme");
+      return (
+        theme === "dark" ||
+        (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)
+      );
     }
-  }, []);
+    return false;
+  });
+
+  // Apply theme to document
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDark]);
 
   const toggleTheme = () => {
     setIsDark(!isDark);
@@ -35,7 +41,7 @@ export default function Navbar() {
 
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link
