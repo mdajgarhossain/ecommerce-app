@@ -134,7 +134,7 @@ export default function HomePage() {
             className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
               selectedCategory === "all"
                 ? "bg-blue-600 text-white"
-                : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+                : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer"
             }`}
           >
             All Products
@@ -147,7 +147,7 @@ export default function HomePage() {
               className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap capitalize transition-colors ${
                 selectedCategory === category
                   ? "bg-blue-600 text-white"
-                  : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+                  : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer"
               }`}
             >
               {category}

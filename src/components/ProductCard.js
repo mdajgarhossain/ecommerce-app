@@ -71,7 +71,7 @@ export default function ProductCard({ product }) {
           <button
             onClick={handleAddToCart}
             disabled={isAdding}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+            className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 cursor-pointer ${
               isAdding
                 ? "bg-green-500 text-white scale-95"
                 : isInCart

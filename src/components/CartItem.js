@@ -40,6 +40,7 @@ export default function CartItem({ item }) {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => updateQuantity(item.id, item.quantity - 1)}
+              disabled={item.quantity === 1}
               className="p-1 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
               aria-label="Decrease quantity"
             >
