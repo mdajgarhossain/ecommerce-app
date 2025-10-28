@@ -4,7 +4,7 @@ A modern, feature-rich e-commerce platform built with Next.js 16, React Context 
 
 ## 🌐 Live Demo
 
-**Live Application:** [https://your-app.vercel.app](https://your-app.vercel.app)  
+**Live Application:** [https://shopping-hub-xi-red.vercel.app/](https://shopping-hub-xi-red.vercel.app/)  
 **GitHub Repository:** [https://github.com/mdajgarhossain/ecommerce-app](https://github.com/mdajgarhossain/ecommerce-app)
 
 ## ✨ Features
