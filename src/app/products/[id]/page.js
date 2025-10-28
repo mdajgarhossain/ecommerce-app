@@ -18,10 +18,10 @@ export async function generateStaticParams() {
 
 // Fetch product data at build time
 export async function generateMetadata({ params }) {
+  const { id } = await params; // Await params here
+
   try {
-    const response = await axios.get(
-      `https://fakestoreapi.com/products/${params.id}`
-    );
+    const response = await axios.get(`https://fakestoreapi.com/products/${id}`);
     const product = response.data;
 
     return {
@@ -36,10 +36,10 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ProductPage({ params }) {
+  const { id } = await params; // Await params here
+
   try {
-    const response = await axios.get(
-      `https://fakestoreapi.com/products/${params.id}`
-    );
+    const response = await axios.get(`https://fakestoreapi.com/products/${id}`);
     const product = response.data;
 
     if (!product) {
