@@ -44,7 +44,7 @@ export default function CartPage() {
     if (name === "expiry") {
       // Remove non-digits
       const digitsOnly = value.replace(/\D/g, "");
-      
+
       if (digitsOnly.length >= 2) {
         formattedValue = digitsOnly.slice(0, 2) + "/" + digitsOnly.slice(2, 4);
       } else {
@@ -58,7 +58,7 @@ export default function CartPage() {
     }
 
     setFormData((prev) => ({ ...prev, [name]: formattedValue }));
-    
+
     // Clear error for this field when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
@@ -193,7 +193,7 @@ export default function CartPage() {
 
           <button
             onClick={clearCart}
-            className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-lg bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-800 transition-colors font-medium"
+            className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-lg bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-800 transition-colors font-medium cursor-pointer"
           >
             <Trash2 size={20} />
             <span>Clear Cart</span>
@@ -231,7 +231,7 @@ export default function CartPage() {
 
             <button
               onClick={handleCheckout}
-              className="w-full btn-primary py-3 flex items-center justify-center space-x-2"
+              className="w-full btn-primary py-3 flex items-center justify-center space-x-2 cursor-pointer"
             >
               <CreditCard size={20} />
               <span>Proceed to Checkout</span>
@@ -310,7 +310,9 @@ export default function CartPage() {
                   } bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 outline-none transition-colors`}
                 />
                 {errors.cardNumber && (
-                  <p className="text-red-500 text-sm mt-1">{errors.cardNumber}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.cardNumber}
+                  </p>
                 )}
               </div>
 
