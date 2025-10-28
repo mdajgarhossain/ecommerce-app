@@ -11,17 +11,122 @@ export default function CartPage() {
   const [showCheckout, setShowCheckout] = useState(false);
   const [checkoutComplete, setCheckoutComplete] = useState(false);
 
+  // Form state
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
+  });
+
+  // Validation errors
+  const [errors, setErrors] = useState({});
+
   const handleCheckout = () => {
     setShowCheckout(true);
+    // Reset form and errors when opening checkout
+    setFormData({
+      fullName: "",
+      email: "",
+      cardNumber: "",
+      expiry: "",
+      cvv: "",
+    });
+    setErrors({});
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    let formattedValue = value;
+
+    // Auto-format expiry date (MM/YY)
+    if (name === "expiry") {
+      // Remove non-digits
+      const digitsOnly = value.replace(/\D/g, "");
+      
+      if (digitsOnly.length >= 2) {
+        formattedValue = digitsOnly.slice(0, 2) + "/" + digitsOnly.slice(2, 4);
+      } else {
+        formattedValue = digitsOnly;
+      }
+    }
+
+    // Only allow digits for card number and CVV
+    if (name === "cardNumber" || name === "cvv") {
+      formattedValue = value.replace(/\D/g, "");
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: formattedValue }));
+    
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Full Name validation
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = "Full name is required";
+    } else if (formData.fullName.trim().length < 3) {
+      newErrors.fullName = "Name must be at least 3 characters";
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Please enter a valid email";
+    }
+
+    // Card Number validation (16 digits)
+    const cardRegex = /^\d{16}$/;
+    if (!formData.cardNumber.trim()) {
+      newErrors.cardNumber = "Card number is required";
+    } else if (!cardRegex.test(formData.cardNumber.replace(/\s/g, ""))) {
+      newErrors.cardNumber = "Card number must be 16 digits";
+    }
+
+    // Expiry validation (MM/YY format)
+    const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+    if (!formData.expiry.trim()) {
+      newErrors.expiry = "Expiry date is required";
+    } else if (!expiryRegex.test(formData.expiry)) {
+      newErrors.expiry = "Format must be MM/YY";
+    }
+
+    // CVV validation (3 or 4 digits)
+    const cvvRegex = /^\d{3,4}$/;
+    if (!formData.cvv.trim()) {
+      newErrors.cvv = "CVV is required";
+    } else if (!cvvRegex.test(formData.cvv)) {
+      newErrors.cvv = "CVV must be 3 or 4 digits";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleCompleteOrder = () => {
-    setCheckoutComplete(true);
-    setTimeout(() => {
-      clearCart();
-      setCheckoutComplete(false);
-      setShowCheckout(false);
-    }, 2000);
+    if (validateForm()) {
+      setCheckoutComplete(true);
+      setTimeout(() => {
+        clearCart();
+        setCheckoutComplete(false);
+        setShowCheckout(false);
+        setFormData({
+          fullName: "",
+          email: "",
+          cardNumber: "",
+          expiry: "",
+          cvv: "",
+        });
+      }, 2000);
+    }
   };
 
   if (checkoutComplete) {
@@ -151,45 +256,118 @@ export default function CartPage() {
             </h2>
 
             <div className="space-y-4 mb-6">
-              <input
-                type="text"
-                placeholder="Full Name"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
-              />
-              <input
-                type="email"
-                placeholder="Email Address"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
-              />
-              <input
-                type="text"
-                placeholder="Card Number"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
-              />
+              {/* Full Name */}
+              <div>
+                <input
+                  type="text"
+                  name="fullName"
+                  placeholder="Full Name"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 rounded-lg border ${
+                    errors.fullName
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-gray-300 dark:border-gray-600 focus:ring-blue-500"
+                  } bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 outline-none transition-colors`}
+                />
+                {errors.fullName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
+                )}
+              </div>
+
+              {/* Email */}
+              <div>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email Address"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 rounded-lg border ${
+                    errors.email
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-gray-300 dark:border-gray-600 focus:ring-blue-500"
+                  } bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 outline-none transition-colors`}
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
+              </div>
+
+              {/* Card Number */}
+              <div>
+                <input
+                  type="text"
+                  name="cardNumber"
+                  placeholder="Card Number (16 digits)"
+                  value={formData.cardNumber}
+                  onChange={handleInputChange}
+                  maxLength={16}
+                  className={`w-full px-4 py-3 rounded-lg border ${
+                    errors.cardNumber
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-gray-300 dark:border-gray-600 focus:ring-blue-500"
+                  } bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 outline-none transition-colors`}
+                />
+                {errors.cardNumber && (
+                  <p className="text-red-500 text-sm mt-1">{errors.cardNumber}</p>
+                )}
+              </div>
+
+              {/* Expiry and CVV */}
               <div className="grid grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  placeholder="MM/YY"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-                <input
-                  type="text"
-                  placeholder="CVV"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
-                />
+                <div>
+                  <input
+                    type="text"
+                    name="expiry"
+                    placeholder="MM/YY"
+                    value={formData.expiry}
+                    onChange={handleInputChange}
+                    maxLength={5}
+                    className={`w-full px-4 py-3 rounded-lg border ${
+                      errors.expiry
+                        ? "border-red-500 focus:ring-red-500"
+                        : "border-gray-300 dark:border-gray-600 focus:ring-blue-500"
+                    } bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 outline-none transition-colors`}
+                  />
+                  {errors.expiry && (
+                    <p className="text-red-500 text-sm mt-1">{errors.expiry}</p>
+                  )}
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    name="cvv"
+                    placeholder="CVV"
+                    value={formData.cvv}
+                    onChange={handleInputChange}
+                    maxLength={4}
+                    className={`w-full px-4 py-3 rounded-lg border ${
+                      errors.cvv
+                        ? "border-red-500 focus:ring-red-500"
+                        : "border-gray-300 dark:border-gray-600 focus:ring-blue-500"
+                    } bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 outline-none transition-colors`}
+                  />
+                  {errors.cvv && (
+                    <p className="text-red-500 text-sm mt-1">{errors.cvv}</p>
+                  )}
+                </div>
               </div>
             </div>
 
             <div className="flex space-x-3">
               <button
-                onClick={() => setShowCheckout(false)}
+                onClick={() => {
+                  setShowCheckout(false);
+                  setErrors({});
+                }}
                 className="flex-1 btn-secondary py-3"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCompleteOrder}
-                className="flex-1 btn-primary py-3"
+                className="flex-1 btn-primary py-3 hover:scale-105 active:scale-95 transition-transform"
               >
                 Complete Order
               </button>
