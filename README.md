@@ -98,7 +98,7 @@ shopping-hub/
 
    ```bash
    git clone https://github.com/mdajgarhossain/ecommerce-app.git
-   cd shopping-hub
+   cd ecommerce-app
    ```
 
 2. **Install dependencies**
@@ -273,63 +273,6 @@ UI updates (cart badge, cart page)
    - Tree shaking (unused code removed)
    - Minification in production
    - CSS purging with Tailwind
-
-### Scalability Considerations
-
-**Current Implementation (Small Scale):**
-
-- FakeStore API (~20 products)
-- Client-side filtering and sorting
-- localStorage persistence
-
-**Future Scaling (Production):**
-
-1. **Backend Integration**
-
-   ```
-   Current: FakeStore API (mock data)
-   Future:  Node.js/Express + MongoDB/PostgreSQL
-   ```
-
-2. **API Optimization**
-
-   ```
-   Current: Fetch all products, filter client-side
-   Future:  Server-side pagination, filtering, search
-            GET /api/products?page=1&limit=20&category=electronics
-   ```
-
-3. **Caching Strategy**
-
-   ```
-   Current: localStorage only
-   Future:  Redis for session data
-            CDN for static assets
-            Browser cache headers
-   ```
-
-4. **State Management**
-
-   ```
-   Current: Context API (sufficient for small apps)
-   Future:  Redux Toolkit (for complex state)
-            React Query (for server state)
-   ```
-
-5. **Search Optimization**
-
-   ```
-   Current: Client-side string matching
-   Future:  ElasticSearch for full-text search
-            Search suggestions/autocomplete
-   ```
-
-6. **Real-time Features**
-   ```
-   Current: Static data
-   Future:  WebSocket for inventory updates
-            Server-Sent Events for notifications
-   ```
 
 ## 🎯 Key Technical Decisions
 
