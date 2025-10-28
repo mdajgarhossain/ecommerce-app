@@ -15,6 +15,7 @@ export default function CartItem({ item }) {
           src={item.image}
           alt={item.title}
           fill
+          sizes="96px"
           className="object-contain p-2"
         />
       </div>
