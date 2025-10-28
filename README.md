@@ -181,47 +181,6 @@ vercel --prod
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Component Architecture
-
-```
-App Layout (Root)
-├── CartProvider (Global Cart State)
-│   ├── ToastProvider (Notifications)
-│   │   ├── QuickViewProvider (Modal State)
-│   │   │   ├── ComparisonProvider (Comparison State)
-│   │   │   │   ├── ErrorBoundary (Error Handling)
-│   │   │   │   │   ├── Navbar
-│   │   │   │   │   │   ├── Theme Toggle
-│   │   │   │   │   │   ├── Cart Indicator
-│   │   │   │   │   │   └── Mobile Menu
-│   │   │   │   │   │
-│   │   │   │   │   └── Page Content
-│   │   │   │   │       ├── Homepage
-│   │   │   │   │       │   ├── Search Bar
-│   │   │   │   │       │   ├── Category Filter
-│   │   │   │   │       │   ├── Product Grid
-│   │   │   │   │       │   │   └── ProductCard[]
-│   │   │   │   │       │   └── Pagination
-│   │   │   │   │       │
-│   │   │   │   │       ├── Product Details
-│   │   │   │   │       │   ├── Product Info
-│   │   │   │   │       │   ├── Add to Cart
-│   │   │   │   │       │   └── Recently Viewed
-│   │   │   │   │       │
-│   │   │   │   │       └── Cart Page
-│   │   │   │   │           ├── Cart Items[]
-│   │   │   │   │           ├── Order Summary
-│   │   │   │   │           └── Checkout Modal
-│   │   │   │   │
-│   │   │   │   └── Toast Container
-│   │   │   │
-│   │   │   └── Quick View Modal
-│   │   │
-│   │   └── Comparison Bar
-│   │
-│   └── Global Loading Bar
-```
-
 ### Data Flow Architecture
 
 ```
