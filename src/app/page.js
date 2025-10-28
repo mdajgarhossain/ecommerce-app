@@ -14,6 +14,10 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(8); // Show 8 products per page
+
   // Fetch products and categories
   useEffect(() => {
     async function fetchData() {
@@ -64,7 +68,35 @@ export default function HomePage() {
     }
 
     setFilteredProducts(result);
+    setCurrentPage(1); // Reset to first page when filters change
   }, [selectedCategory, searchQuery, products]);
+
+  // Calculate pagination
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
+  // Pagination handlers
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      handlePageChange(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      handlePageChange(currentPage + 1);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -159,18 +191,108 @@ export default function HomePage() {
       </div>
 
       {/* Results Count */}
-      <p className="text-gray-600 dark:text-gray-400 mb-4">
-        Showing {filteredProducts.length}{" "}
-        {filteredProducts.length === 1 ? "product" : "products"}
-      </p>
+      <div className="flex justify-between items-center mb-4">
+        <p className="text-gray-600 dark:text-gray-400">
+          Showing {indexOfFirstProduct + 1}-
+          {Math.min(indexOfLastProduct, filteredProducts.length)} of{" "}
+          {filteredProducts.length}{" "}
+          {filteredProducts.length === 1 ? "product" : "products"}
+        </p>
+        {totalPages > 1 && (
+          <p className="text-gray-600 dark:text-gray-400">
+            Page {currentPage} of {totalPages}
+          </p>
+        )}
+      </div>
 
       {/* Products Grid */}
       {filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {currentProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center space-x-2 mt-8">
+              {/* Previous Button */}
+              <button
+                onClick={handlePrevious}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  currentPage === 1
+                    ? "bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+                }`}
+              >
+                Previous
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex space-x-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (pageNumber) => {
+                    // Show first page, last page, current page, and pages around current
+                    const showPage =
+                      pageNumber === 1 ||
+                      pageNumber === totalPages ||
+                      (pageNumber >= currentPage - 1 &&
+                        pageNumber <= currentPage + 1);
+
+                    // Show ellipsis
+                    const showEllipsisBefore =
+                      pageNumber === currentPage - 2 && currentPage > 3;
+                    const showEllipsisAfter =
+                      pageNumber === currentPage + 2 &&
+                      currentPage < totalPages - 2;
+
+                    if (showEllipsisBefore || showEllipsisAfter) {
+                      return (
+                        <span
+                          key={pageNumber}
+                          className="px-3 py-2 text-gray-500 dark:text-gray-400"
+                        >
+                          ...
+                        </span>
+                      );
+                    }
+
+                    if (!showPage) return null;
+
+                    return (
+                      <button
+                        key={pageNumber}
+                        onClick={() => handlePageChange(pageNumber)}
+                        className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                          currentPage === pageNumber
+                            ? "bg-blue-600 text-white"
+                            : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer"
+                        }`}
+                      >
+                        {pageNumber}
+                      </button>
+                    );
+                  }
+                )}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={handleNext}
+                disabled={currentPage === totalPages}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  currentPage === totalPages
+                    ? "bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+                }`}
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
       ) : (
         <div className="text-center py-12">
           <p className="text-gray-600 dark:text-gray-400 text-lg">
@@ -181,7 +303,7 @@ export default function HomePage() {
               setSearchQuery("");
               setSelectedCategory("all");
             }}
-            className="mt-4 btn-secondary"
+            className="mt-4 btn-secondary cursor-pointer"
           >
             Clear Filters
           </button>
